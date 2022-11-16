@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Follow
+from .models import Subscribe
 
 User = get_user_model()
 
@@ -19,8 +19,8 @@ class UserAdmin(UserAdmin):
     list_filter = ('email', 'first_name')
 
 
-@admin.register(Follow)
-class FollowAdmin(admin.ModelAdmin):
+@admin.register(Subscribe)
+class SubscribeAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'author',

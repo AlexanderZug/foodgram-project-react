@@ -33,8 +33,8 @@ class User(AbstractUser):
             "unique": _("Пользователь с таким именем уже существует."),
         },
     )
-    follower: Union[Follow, Manager]
-    following: Union[Follow, Manager]
+    subscriber: Union[Subscribe, Manager]
+    subscribing: Union[Subscribe, Manager]
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [
@@ -53,19 +53,19 @@ class User(AbstractUser):
         return self.username
 
 
-class Follow(models.Model):
+class Subscribe(models.Model):
     user = models.ForeignKey(
         User,
         verbose_name='Подписчик',
         on_delete=models.CASCADE,
-        related_name='follower',
+        related_name='subscriber',
     )
 
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
         on_delete=models.CASCADE,
-        related_name='following',
+        related_name='subscribing',
     )
 
     class Meta:
@@ -77,3 +77,9 @@ class Follow(models.Model):
         ]
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return (
+            f'Подписчик: { self.user.username }\n'
+            f'Автор: { self.author.username }'
+        )
