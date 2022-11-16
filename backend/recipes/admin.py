@@ -1,11 +1,23 @@
 from django.contrib import admin
 
-from .models import (Favourite, Ingredient, IngredientInRecipe, Recipe,
-                     ShoppingCart, Tag)
+from .models import (
+    Favourite,
+    Ingredient,
+    IngredientInRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag,
+)
+
+
+class IngredientInline(admin.TabularInline):
+    model = IngredientInRecipe
+    extra = 1
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    inlines = (IngredientInline,)
     list_display = ('id', 'name', 'author')
     list_filter = (
         'author',
@@ -16,6 +28,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
+    inlines = (IngredientInline,)
     list_display = (
         'name',
         'measurement_unit',
@@ -45,13 +58,4 @@ class FavouriteAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'recipe',
-    )
-
-
-@admin.register(IngredientInRecipe)
-class IngredientInRecipe(admin.ModelAdmin):
-    list_display = (
-        'recipe',
-        'ingredient',
-        'amount',
     )
