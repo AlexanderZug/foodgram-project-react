@@ -1,7 +1,13 @@
+import io
 from datetime import datetime
 
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
@@ -70,8 +76,7 @@ class RecipeViewSet(ModelViewSet):
     def favorite(self, request, pk):
         if request.method == 'POST':
             return self.add_to(Favourite, request.user, pk)
-        else:
-            return self.delete_from(Favourite, request.user, pk)
+        return self.delete_from(Favourite, request.user, pk)
 
     @action(
         detail=True,
@@ -81,8 +86,7 @@ class RecipeViewSet(ModelViewSet):
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
             return self.add_to(ShoppingCart, request.user, pk)
-        else:
-            return self.delete_from(ShoppingCart, request.user, pk)
+        return self.delete_from(ShoppingCart, request.user, pk)
 
     def add_to(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
@@ -115,27 +119,35 @@ class RecipeViewSet(ModelViewSet):
             IngredientInRecipe.objects.filter(
                 recipe__shopping_cart__user=request.user
             )
-            .values('ingredient__name', 'ingredient__measurement_unit')
+            .values('ingredient__name', 'ingredient__measurement_unit', 'recipe__image')
             .annotate(amount=Sum('amount'))
         )
 
         today = datetime.today()
         shopping_list = (
-            f'Список покупок: {user.get_full_name()}\n\n'
-            f'Дата: {today:%Y-%m-%d}\n\n'
+            f'Список покупок: {user.get_full_name()}\n'
+            f'Дата: {today:%Y-%m-%d}\n'
         )
         shopping_list += '\n'.join(
             [
-                f'- {ingredient["ingredient__name"]} '
-                f'({ingredient["ingredient__measurement_unit"]})'
-                f' - {ingredient["amount"]}'
+                f'-- {ingredient["ingredient__name"]} '
+                f'-- ({ingredient["ingredient__measurement_unit"]}) '
+                f'-- {ingredient["amount"]} '.title()
                 for ingredient in ingredients
             ]
         )
-        shopping_list += f'Foodgram ({today:%Y})'
+        filename = f'{user.username}_shopping_list.pdf'
 
-        filename = f'{user.username}_shopping_list.txt'
-        response = HttpResponse(shopping_list, content_type='text/plain')
-        response['Content-Disposition'] = f'attachment; filename={filename}'
+        buffer = io.BytesIO()
+        pdf_to_user = canvas.Canvas(buffer, pagesize=A4)
+        pdfmetrics.registerFont(TTFont('TimesNewRoman', 'Times New Roman.ttf'))
+        pdf_to_user.setFont('TimesNewRoman', 14)
+        for k, v in enumerate(shopping_list.split('\n')):
+            pdf_to_user.drawString(45, 800 - int(str(k) + str(10)), v)
+        image = ImageReader('media/' + ingredients[0].get('recipe__image'))
+        pdf_to_user.drawImage(image, 450, 50, 100, 100)
+        pdf_to_user.showPage()
+        pdf_to_user.save()
 
-        return
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename=filename)
