@@ -18,11 +18,11 @@ class IngredientInline(admin.TabularInline):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientInline,)
-    list_display = ('id', 'name', 'author')
+    list_display = ("id", "name", "author")
     list_filter = (
-        'author',
-        'name',
-        'tags',
+        "author",
+        "name",
+        "tags",
     )
 
 
@@ -30,32 +30,32 @@ class RecipeAdmin(admin.ModelAdmin):
 class IngredientAdmin(admin.ModelAdmin):
     inlines = (IngredientInline,)
     list_display = (
-        'name',
-        'measurement_unit',
+        "name",
+        "measurement_unit",
     )
-    list_filter = ('name',)
+    list_filter = ("name",)
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
-        'name',
-        'color',
-        'slug',
+        "name",
+        "color",
+        "slug",
     )
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = (
-        'user',
-        'recipe',
+        "user",
+        "recipe",
     )
 
 
 @admin.register(Favourite)
 class FavouriteAdmin(admin.ModelAdmin):
     list_display = (
-        'user',
-        'recipe',
+        "user",
+        "recipe",
     )

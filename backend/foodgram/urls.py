@@ -6,12 +6,10 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        default_version='v1',
+        default_version="v1",
         title="Foodgram",
         description="Документация проекта Foodgram",
-        contact=openapi.Contact(
-            email="alexandertsygankov.unterwegs@gmail.com"
-        ),
+        contact=openapi.Contact(email="alexandertsygankov.unterwegs@gmail.com"),
         license=openapi.License(name="Apache License"),
     ),
     public=True,
@@ -20,21 +18,21 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/', include('api.urls')),
-    path('api/', include('users.urls')),
+    path("api/", include("api.urls")),
+    path("api/", include("users.urls")),
     re_path(
-        r'^swagger(?P<format>\.json|\.yaml)$',
+        r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),
-        name='schema-json',
+        name="schema-json",
     ),
     re_path(
-        r'^swagger/$',
-        schema_view.with_ui('swagger', cache_timeout=0),
-        name='schema-swagger-ui',
+        r"^swagger/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
     ),
     re_path(
-        r'^redoc/$',
-        schema_view.with_ui('redoc', cache_timeout=0),
-        name='schema-redoc',
+        r"^redoc/$",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc",
     ),
 ]

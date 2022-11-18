@@ -36,18 +36,18 @@ class User(AbstractUser):
     subscriber: Union[Subscribe, Manager]
     subscribing: Union[Subscribe, Manager]
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = [
-        'username',
-        'first_name',
-        'last_name',
-        'password',
+        "username",
+        "first_name",
+        "last_name",
+        "password",
     ]
 
     class Meta:
-        ordering = ('id',)
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        ordering = ("id",)
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
 
     def __str__(self):
         return self.username
@@ -56,30 +56,25 @@ class User(AbstractUser):
 class Subscribe(models.Model):
     user = models.ForeignKey(
         User,
-        verbose_name='Подписчик',
+        verbose_name="Подписчик",
         on_delete=models.CASCADE,
-        related_name='subscriber',
+        related_name="subscriber",
     )
 
     author = models.ForeignKey(
         User,
-        verbose_name='Автор',
+        verbose_name="Автор",
         on_delete=models.CASCADE,
-        related_name='subscribing',
+        related_name="subscribing",
     )
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ("-id",)
         constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'], name='unique_follow'
-            ),
+            models.UniqueConstraint(fields=["user", "author"], name="unique_follow"),
         ]
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
 
     def __str__(self):
-        return (
-            f'Подписчик: { self.user.username }\n'
-            f'Автор: { self.author.username }'
-        )
+        return f"Подписчик: { self.user.username }\n" f"Автор: { self.author.username }"
