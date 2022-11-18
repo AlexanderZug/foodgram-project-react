@@ -4,12 +4,13 @@ from django.db.models import F
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
+
+from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from users.models import Subscribe
 
 User = get_user_model()
@@ -169,7 +170,9 @@ class RecipeWriteSerializer(ModelSerializer):
     def validate_ingredients(self, value):
         ingredients = value
         if not ingredients:
-            raise ValidationError({"ingredients": "Нужен хотя бы один ингредиент!"})
+            raise ValidationError(
+                {"ingredients": "Нужен хотя бы один ингредиент!"}
+            )
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item["id"])
@@ -187,7 +190,9 @@ class RecipeWriteSerializer(ModelSerializer):
     def validate_tags(self, value):
         tags = value
         if not tags:
-            raise ValidationError({"tags": "Нужно выбрать как минимум один тег"})
+            raise ValidationError(
+                {"tags": "Нужно выбрать как минимум один тег"}
+            )
         tags_list = []
         for tag in tags:
             if tag in tags_list:
@@ -225,7 +230,9 @@ class RecipeWriteSerializer(ModelSerializer):
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
-        self.create_ingredients_amounts(recipe=instance, ingredients=ingredients)
+        self.create_ingredients_amounts(
+            recipe=instance, ingredients=ingredients
+        )
         instance.save()
         return instance
 

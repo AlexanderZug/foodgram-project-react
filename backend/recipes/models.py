@@ -28,7 +28,9 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(verbose_name="Наименование", unique=True, max_length=200)
+    name = models.CharField(
+        verbose_name="Наименование", unique=True, max_length=200
+    )
 
     color = ColorField(
         verbose_name="HEX-код",
@@ -75,7 +77,9 @@ class Recipe(models.Model):
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name="Время приготовления",
         validators=[
-            MinValueValidator(1, message="Значение не должно быть меньше единицы")
+            MinValueValidator(
+                1, message="Значение не должно быть меньше единицы"
+            )
         ],
     )
 
@@ -123,7 +127,9 @@ class IngredientInRecipe(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name="Количество",
         validators=[
-            MinValueValidator(1, message="Значение не должно быть меньше единицы")
+            MinValueValidator(
+                1, message="Значение не должно быть меньше единицы"
+            )
         ],
     )
 
@@ -157,7 +163,9 @@ class Favourite(models.Model):
         verbose_name = "Избранное"
         verbose_name_plural = "Избранное"
         constraints = [
-            UniqueConstraint(fields=["user", "recipe"], name="unique_favourite")
+            UniqueConstraint(
+                fields=["user", "recipe"], name="unique_favourite"
+            )
         ]
 
     def __str__(self):
@@ -183,7 +191,9 @@ class ShoppingCart(models.Model):
         verbose_name = "Корзина"
         verbose_name_plural = "Корзина"
         constraints = [
-            UniqueConstraint(fields=["user", "recipe"], name="unique_shopping_cart")
+            UniqueConstraint(
+                fields=["user", "recipe"], name="unique_shopping_cart"
+            )
         ]
 
     def __str__(self):

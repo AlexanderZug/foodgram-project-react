@@ -9,7 +9,9 @@ schema_view = get_schema_view(
         default_version="v1",
         title="Foodgram",
         description="Документация проекта Foodgram",
-        contact=openapi.Contact(email="alexandertsygankov.unterwegs@gmail.com"),
+        contact=openapi.Contact(
+            email="alexandertsygankov.unterwegs@gmail.com"
+        ),
         license=openapi.License(name="Apache License"),
     ),
     public=True,

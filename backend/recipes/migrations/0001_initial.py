@@ -29,11 +29,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    models.CharField(max_length=120, verbose_name="Наименование"),
+                    models.CharField(
+                        max_length=120, verbose_name="Наименование"
+                    ),
                 ),
                 (
                     "measurement_unit",
-                    models.CharField(max_length=120, verbose_name="Единица измерения"),
+                    models.CharField(
+                        max_length=120, verbose_name="Единица измерения"
+                    ),
                 ),
             ],
             options={
@@ -94,12 +98,16 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    models.CharField(max_length=200, verbose_name="Наименование"),
+                    models.CharField(
+                        max_length=200, verbose_name="Наименование"
+                    ),
                 ),
                 ("text", models.TextField(verbose_name="Описание")),
                 (
                     "image",
-                    models.ImageField(upload_to="recipes/", verbose_name="Изображение"),
+                    models.ImageField(
+                        upload_to="recipes/", verbose_name="Изображение"
+                    ),
                 ),
                 (
                     "cooking_time",
@@ -175,7 +183,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "slug",
-                    models.SlugField(max_length=200, unique=True, verbose_name="Cлаг"),
+                    models.SlugField(
+                        max_length=200, unique=True, verbose_name="Cлаг"
+                    ),
                 ),
             ],
             options={

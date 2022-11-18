@@ -4,6 +4,13 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+
 from recipes.models import (
     Favourite,
     Ingredient,
@@ -12,12 +19,6 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
@@ -109,7 +110,9 @@ class RecipeViewSet(ModelViewSet):
             return Response(status=HTTP_400_BAD_REQUEST)
 
         ingredients = (
-            IngredientInRecipe.objects.filter(recipe__shopping_cart__user=request.user)
+            IngredientInRecipe.objects.filter(
+                recipe__shopping_cart__user=request.user
+            )
             .values(
                 "ingredient__name",
                 "ingredient__measurement_unit",
