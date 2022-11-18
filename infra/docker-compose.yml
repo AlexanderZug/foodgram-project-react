@@ -8,7 +8,7 @@ services:
       - .env
 
   backend:
-    build: ../backend
+    build: alexzug89/sto_gramm_backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,7 +20,7 @@ services:
 
   frontend:
     build:
-      context: ../frontend
+      context: alexzug89/sto_gramm_frontend:latest
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
