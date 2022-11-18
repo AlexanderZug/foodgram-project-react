@@ -8,7 +8,7 @@ services:
       - .env
 
   backend:
-    build: alexzug89/sto_gramm_backend:latest
+    image: alexzug89/sto_gramm_backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -19,9 +19,7 @@ services:
       - .env
 
   frontend:
-    build:
-      context: alexzug89/sto_gramm_frontend:latest
-      dockerfile: Dockerfile
+    image: alexzug89/sto_gramm_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:

@@ -46,6 +46,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: backend
+          file: backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/sto_gramm_backend:latest
 
@@ -53,6 +54,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: frontend
+          file: frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/sto_gramm_fontend:latest
 
@@ -70,8 +72,9 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           stack_file_name: docker-compose.yaml
           script: |
+            cd infra
             sudo docker-compose stop
-            sudo docker-compose rm web
+            sudo docker-compose rm backend
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/sto_gramm_backend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/sto_gramm_fontend:latest
             touch .env
@@ -82,3 +85,5 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             sudo docker-compose up -d
+            sudo docker-compose exec -T backend python manage.py migrate
+            sudo docker-compose exec -T backend python manage.py collectstatic --no-input
