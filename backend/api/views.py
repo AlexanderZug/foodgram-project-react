@@ -11,15 +11,25 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from recipes.models import (Favourite, Ingredient, IngredientInRecipe, Recipe,
-                            ShoppingCart, Tag)
+from recipes.models import (
+    Favourite,
+    Ingredient,
+    IngredientInRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag,
+)
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from .serializers import (IngredientSerializer, RecipeReadSerializer,
-                          RecipeShortSerializer, RecipeWriteSerializer,
-                          TagSerializer)
+from .serializers import (
+    IngredientSerializer,
+    RecipeReadSerializer,
+    RecipeShortSerializer,
+    RecipeWriteSerializer,
+    TagSerializer,
+)
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
@@ -70,7 +80,8 @@ class RecipeViewSet(ModelViewSet):
     def shopping_cart(self, request, pk):
         if request.method == "POST":
             return self.add_to(ShoppingCart, request.user, pk)
-        return self.delete_from(ShoppingCart, request.user, pk)
+        else:
+            return self.delete_from(ShoppingCart, request.user, pk)
 
     def add_to(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():

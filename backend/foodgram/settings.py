@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "colorfield",
     "users.apps.UsersConfig",
     "recipes.apps.RecipesConfig",
+    "api.apps.ApiConfig"
 ]
 
 MIDDLEWARE = [
@@ -50,12 +51,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "foodgram.urls"
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [TEMPLATES_DIR],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -118,6 +117,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
@@ -129,10 +129,12 @@ DJOSER = {
         "user": "api.serializers.UserSerializer",
         "current_user": "api.serializers.UserSerializer",
     },
+
     "PERMISSIONS": {
         "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
         "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
     },
+
     "HIDE_USERS": False,
 }
 # Internationalization
@@ -157,3 +159,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
