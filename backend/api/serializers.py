@@ -13,8 +13,6 @@ from rest_framework.serializers import ModelSerializer
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from users.models import Subscribe
 
-from .validators import image_validator
-
 User = get_user_model()
 
 
@@ -117,9 +115,6 @@ class RecipeReadSerializer(ModelSerializer):
             'text',
             'cooking_time',
         )
-        extra_kwargs = {
-            'image': {'required': False, 'validators': [image_validator]},
-        }
 
     def get_ingredients(self, obj):
         return obj.ingredients.values(
@@ -168,9 +163,6 @@ class RecipeWriteSerializer(ModelSerializer):
             'text',
             'cooking_time',
         )
-        extra_kwargs = {
-            'image': {'required': False, 'validators': [image_validator]},
-        }
 
     def validate_ingredients(self, value):
         ingredients = value
@@ -253,6 +245,3 @@ class RecipeShortSerializer(ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
-        extra_kwargs = {
-            'image': {'required': False, 'validators': [image_validator]},
-        }
