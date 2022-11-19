@@ -13,6 +13,8 @@ from rest_framework.serializers import ModelSerializer
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from users.models import Subscribe
 
+from .validators import image_validator
+
 User = get_user_model()
 
 
@@ -31,19 +33,18 @@ class UserSerializer(UserSerializer):
     class Meta:
         model = User
         fields = (
-            "email",
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "is_subscribed",
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
         )
 
     def get_is_subscribed(self, obj):
-        user = self.context.get("request").user
-        if user.is_anonymous:
+        if self.context.get('request').user.is_anonymous:
             return False
-        return Subscribe.objects.filter(user=user, author=obj).exists()
+        return Subscribe.objects.filter(user=self.context.get('request').user, author=obj).exists()
 
 
 class SubscribeSerializer(UserSerializer):
@@ -85,13 +86,13 @@ class SubscribeSerializer(UserSerializer):
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields = ('id', 'name', 'measurement_unit')
 
 
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ('id', 'name', 'color', 'slug')
 
 
 class RecipeReadSerializer(ModelSerializer):
@@ -116,6 +117,9 @@ class RecipeReadSerializer(ModelSerializer):
             'text',
             'cooking_time',
         )
+        extra_kwargs = {
+            'image': {'required': False, 'validators': [image_validator]},
+        }
 
     def get_ingredients(self, obj):
         return obj.ingredients.values(
@@ -164,6 +168,9 @@ class RecipeWriteSerializer(ModelSerializer):
             'text',
             'cooking_time',
         )
+        extra_kwargs = {
+            'image': {'required': False, 'validators': [image_validator]},
+        }
 
     def validate_ingredients(self, value):
         ingredients = value
@@ -173,7 +180,7 @@ class RecipeWriteSerializer(ModelSerializer):
             )
         ingredients_list = []
         for item in ingredients:
-            ingredient = get_object_or_404(Ingredient, id=item['id'])
+            ingredient = get_object_or_404(Ingredient, id=item.get('id'))
             if ingredient in ingredients_list:
                 raise ValidationError(
                     {'ingredients': 'Ингридиенты не могут повторяться'}
@@ -203,7 +210,7 @@ class RecipeWriteSerializer(ModelSerializer):
         IngredientInRecipe.objects.bulk_create(
             [
                 IngredientInRecipe(
-                    ingredient=Ingredient.objects.get(id=ingredient['id']),
+                    ingredient=Ingredient.objects.get(id=ingredient.get('id')),
                     recipe=recipe,
                     amount=ingredient['amount'],
                 )
@@ -213,8 +220,8 @@ class RecipeWriteSerializer(ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        tags = validated_data.pop("tags")
-        ingredients = validated_data.pop("ingredients")
+        tags = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
         self.create_ingredients_amounts(recipe=recipe, ingredients=ingredients)
@@ -222,8 +229,8 @@ class RecipeWriteSerializer(ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        tags = validated_data.pop("tags")
-        ingredients = validated_data.pop("ingredients")
+        tags = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients')
         instance = super().update(instance, validated_data)
         instance.tags.clear()
         instance.tags.set(tags)
@@ -235,8 +242,8 @@ class RecipeWriteSerializer(ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        request = self.context.get("request")
-        context = {"request": request}
+        request = self.context.get('request')
+        context = {'request': request}
         return RecipeReadSerializer(instance, context=context).data
 
 
@@ -245,4 +252,7 @@ class RecipeShortSerializer(ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ("id", "name", "image", "cooking_time")
+        fields = ('id', 'name', 'image', 'cooking_time')
+        extra_kwargs = {
+            'image': {'required': False, 'validators': [image_validator]},
+        }

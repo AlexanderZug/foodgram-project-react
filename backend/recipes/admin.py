@@ -12,18 +12,15 @@ from .models import (
 
 class IngredientInline(admin.TabularInline):
     model = IngredientInRecipe
-    extra = 1
+    extra = 10
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    list_display = ('author', 'name', 'cooking_time')
+    search_fields = ('name', 'author', 'tags')
+    list_filter = ('author', 'name', 'tags')
     inlines = (IngredientInline,)
-    list_display = ("id", "name", "author")
-    list_filter = (
-        "author",
-        "name",
-        "tags",
-    )
 
 
 @admin.register(Ingredient)

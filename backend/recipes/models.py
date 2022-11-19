@@ -4,7 +4,7 @@ from typing import Union
 
 from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Manager, UniqueConstraint
 
@@ -72,15 +72,12 @@ class Recipe(models.Model):
     image = models.ImageField(
         verbose_name='Изображение',
         upload_to='recipes/',
+        blank=True,
+        null=True
     )
 
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
-        validators=[
-            MinValueValidator(
-                1, message='Значение не должно быть меньше единицы'
-            )
-        ],
     )
 
     ingredients = models.ManyToManyField(
@@ -126,11 +123,6 @@ class IngredientInRecipe(models.Model):
 
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
-        validators=[
-            MinValueValidator(
-                1, message='Значение не должно быть меньше единицы'
-            )
-        ],
     )
 
     class Meta:
