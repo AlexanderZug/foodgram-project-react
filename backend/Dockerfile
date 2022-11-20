@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN sudo apt-get update && sudo apt-get upgrade -y
 RUN python3 -m pip install --upgrade pip
 RUN pip install -r requirements.txt --no-cache-dir
 
