@@ -63,7 +63,8 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foo_backend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foo_frontend:latest
             cd infra/
-            docker rm -f $(docker ps -aq)
+            sudo docker stop $(docker ps -a -q)
+            sudo docker rm $(docker ps -a -q)
             sudo docker-compose rm web
       - name: docker-compose up
         uses: appleboy/ssh-action@master
@@ -74,8 +75,8 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd infra/
-            sudo docker rm -f $(docker ps -aq)
-            sudo docker-compose rm web
+            sudo docker stop $(docker ps -a -q)
+            sudo docker rm $(docker ps -a -q)
             sudo touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
