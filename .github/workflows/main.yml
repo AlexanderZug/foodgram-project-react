@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  tests:
+  install_dependencies:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -23,7 +23,7 @@ jobs:
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    needs: tests
+    needs: install_dependencies
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Check out the repo
