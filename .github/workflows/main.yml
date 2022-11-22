@@ -63,7 +63,7 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foo_backend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foo_frontend:latest
             cd infra/
-            sudo docker-compose down -v
+            docker rm -f $(docker ps -aq)
             sudo docker-compose rm web
       - name: docker-compose up
         uses: appleboy/ssh-action@master
