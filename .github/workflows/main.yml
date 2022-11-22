@@ -74,7 +74,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd infra/
-            docker rm -f $(docker ps -aq)
+            sudo docker rm -f $(docker ps -aq)
             sudo docker-compose rm web
             sudo touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
