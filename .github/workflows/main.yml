@@ -39,14 +39,14 @@ jobs:
         with:
           context: backend/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/foo_backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/foo_b:latest
 
       - name: Push frontend to Docker Hub
         uses: docker/build-push-action@v2
         with:
           context: frontend/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/foo_frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/foo_f:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -60,11 +60,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foo_backend:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foo_frontend:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foo_b:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foo_f:latest
             cd infra/
-            sudo docker stop $(docker ps -a -q)
-            sudo docker rm $(docker ps -a -q)
+            sudo docker-compose down -v
             sudo docker-compose rm web
       - name: docker-compose up
         uses: appleboy/ssh-action@master
@@ -75,8 +74,6 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd infra/
-            sudo docker stop $(docker ps -a -q)
-            sudo docker rm $(docker ps -a -q)
             sudo touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
@@ -85,7 +82,7 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
-            sudo docker-compose up -d
+            sudo docker-compose up -d --build
             sudo docker-compose exec web python manage.py migrate
             sudo docker-compose exec web python manage.py load_data
             sudo docker-compose exec web python manage.py collectstatic --noinput

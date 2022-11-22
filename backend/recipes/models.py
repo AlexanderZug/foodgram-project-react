@@ -19,9 +19,15 @@ class Ingredient(models.Model):
     ingredients: Union[IngredientInRecipe, Manager]
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-        ordering = ('name',)
+        constraints = (
+            models.UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_ingredient'
+            ),
+        )
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
@@ -29,7 +35,7 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(
-        verbose_name='Наименование', unique=True, max_length=200
+        verbose_name='Наименование', unique=True, max_length=200, db_index=True,
     )
 
     color = ColorField(
@@ -44,11 +50,12 @@ class Tag(models.Model):
         ],
     )
 
-    slug = models.SlugField(verbose_name='Cлаг', unique=True, max_length=120)
+    slug = models.SlugField(verbose_name='Cлаг', unique=True, max_length=120, db_index=True,)
 
     recipes: Union[Recipe, Manager]
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -57,13 +64,12 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    name = models.CharField(verbose_name='Наименование', max_length=200)
+    name = models.CharField(verbose_name='Наименование', max_length=200, db_index=True,)
 
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
         on_delete=models.CASCADE,
-        null=True,
         related_name='recipes',
     )
 
@@ -71,13 +77,12 @@ class Recipe(models.Model):
 
     image = models.ImageField(
         verbose_name='Изображение',
-        upload_to='recipes/',
-        blank=True,
-        null=True
+        upload_to='recipes/images/',
     )
 
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
+        default=1,
     )
 
     ingredients = models.ManyToManyField(
@@ -123,11 +128,19 @@ class IngredientInRecipe(models.Model):
 
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
+        default=1,
     )
 
     class Meta:
-        verbose_name = 'Ингредиенты рецепта'
+        ordering = ('-id',)
+        verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты рецепта'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('ingredient', 'recipe'),
+                name='unique_ingredients_recipe'
+            ),
+        )
 
     def __str__(self):
         return (
@@ -156,7 +169,7 @@ class Favourite(models.Model):
         verbose_name_plural = 'Избранное'
         constraints = [
             UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_favourite'
+                fields=('user', 'recipe'), name='unique_favourite'
             )
         ]
 
@@ -180,11 +193,12 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
         constraints = [
             UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_shopping_cart'
+                fields=('user', 'recipe'), name='unique_shopping_cart'
             )
         ]
 

@@ -6,7 +6,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import IntegerField, SerializerMethodField
+from rest_framework.fields import IntegerField, SerializerMethodField, ReadOnlyField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -84,13 +84,13 @@ class SubscribeSerializer(UserSerializer):
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit',)
 
 
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'color', 'slug')
+        fields = ('id', 'name', 'color', 'slug',)
 
 
 class RecipeReadSerializer(ModelSerializer):
@@ -138,17 +138,21 @@ class RecipeReadSerializer(ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(ModelSerializer):
-    id = IntegerField(write_only=True)
+    id = ReadOnlyField(source='ingredient.id')
+    name = ReadOnlyField(source='ingredient.name')
+    measurement_unit = ReadOnlyField(
+        source='ingredient.measurement_unit',
+    )
 
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
 class RecipeWriteSerializer(ModelSerializer):
-    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = PrimaryKeyRelatedField(many=True, read_only=True)
     author = UserSerializer(read_only=True)
-    ingredients = IngredientInRecipeWriteSerializer(many=True)
+    ingredients = IngredientInRecipeWriteSerializer(source='amount_ingredient', read_only=True, many=True)
     image = Base64ImageField()
 
     class Meta:

@@ -72,7 +72,7 @@ class Subscribe(models.Model):
         ordering = ('-id',)
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'], name='unique_follow'
+                fields=('user', 'author'), name='unique_follow'
             ),
         ]
         verbose_name = 'Подписка'
