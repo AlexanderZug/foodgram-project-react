@@ -1,18 +1,12 @@
 from django.contrib import admin
 
-from .models import (
-    Favourite,
-    Ingredient,
-    IngredientInRecipe,
-    Recipe,
-    ShoppingCart,
-    Tag,
-)
+from .models import (Favourite, Ingredient, IngredientInRecipe, Recipe,
+                     ShoppingCart, Tag)
 
 
 class IngredientInline(admin.TabularInline):
     model = IngredientInRecipe
-    extra = 10
+    extra = 5
 
 
 @admin.register(Recipe)
