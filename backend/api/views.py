@@ -30,7 +30,6 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     filter_backends = (IngredientFilter,)
     search_fields = ('^name',)
     pagination_class = None
-    # filterset_class = IngredientFilter
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -118,8 +117,8 @@ class RecipeViewSet(ModelViewSet):
 
         today = datetime.today()
         shopping_list = (
-            f"Список покупок для: {user.get_full_name()}\n\n"
-            "Дата: %s. %s. %s. \n\n" % (today.day, today.month, today.year)
+                f"Список покупок для: {user.get_full_name()}\n\n"
+                "Дата: %s. %s. %s. \n\n" % (today.day, today.month, today.year)
         )
         shopping_list += "\n".join(
             [
