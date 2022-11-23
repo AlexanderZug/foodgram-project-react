@@ -41,3 +41,4 @@ docker-compose exes back python3 manage.py laod_data
 docker-compose exec back python3 manage.py collectstatic --no-input
 ```
 Проект должен быть доступен по http://localhost
+Сервер также развернут по адресу: http://84.252.137.69/
