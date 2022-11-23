@@ -110,9 +110,8 @@ class RecipeViewSet(ModelViewSet):
             .values(
                 'ingredient__name',
                 'ingredient__measurement_unit',
-                'recipe__image',
             )
-            .annotate(amount=Sum("amount"))
+            .annotate(amount=Sum('amount')).order_by()
         )
 
         today = datetime.today()
@@ -120,7 +119,7 @@ class RecipeViewSet(ModelViewSet):
                 f'Список покупок для: {user.get_full_name()}\n\n'
                 'Дата: %s. %s. %s. \n\n' % (today.day, today.month, today.year)
         )
-        shopping_list += "\n".join(
+        shopping_list += '\n'.join(
             [
                 f'- {ingredient["ingredient__name"]} '
                 f'({ingredient["ingredient__measurement_unit"]})'
