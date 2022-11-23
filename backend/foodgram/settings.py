@@ -8,9 +8,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv("SECRET_KEY", default="default")
 
-DEBUG = False
+DEBUG = bool(int(os.getenv('DEBUG', default=1)))
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='*, localhost').split(', ')
 
 AUTH_USER_MODEL = "users.User"
 

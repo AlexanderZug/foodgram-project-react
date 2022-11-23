@@ -6,7 +6,7 @@ from .models import (Favourite, Ingredient, IngredientInRecipe, Recipe,
 
 class IngredientInline(admin.TabularInline):
     model = IngredientInRecipe
-    extra = 5
+    extra = 3
 
 
 @admin.register(Recipe)
