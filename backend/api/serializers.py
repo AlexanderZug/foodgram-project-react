@@ -240,7 +240,11 @@ class RecipeWriteSerializer(ModelSerializer):
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item['id'])
-            if int(item['amount']) <= 0:
+            if ingredient in ingredients_list:
+                raise ValidationError({
+                    'ingredients': 'Ингридиенты не должны повторяться'
+                })
+            if int(item['amount']) < 1:
                 raise ValidationError(
                     {'amount': 'Количество ингредиентов не может быть меньше нуля'}
                 )
@@ -250,7 +254,9 @@ class RecipeWriteSerializer(ModelSerializer):
     def validate_tags(self, value):
         tags = value
         if not tags:
-            raise ValidationError({'tags': 'Должен быть выбран как минимум один тег'})
+            raise ValidationError(
+                {'tags': 'Должен быть выбран как минимум один тег'}
+            )
         tags_list = []
         for tag in tags:
             tags_list.append(tag)

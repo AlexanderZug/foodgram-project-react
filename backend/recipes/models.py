@@ -4,7 +4,7 @@ from typing import Union
 
 from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator
 from django.db import models
 from django.db.models import Manager, UniqueConstraint
 
@@ -82,6 +82,11 @@ class Recipe(models.Model):
 
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
+        validators=[
+            MinValueValidator(
+                1, message='Значение должно быть не меньше единицы'
+            )
+        ],
         default=1,
     )
 

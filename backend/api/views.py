@@ -42,7 +42,7 @@ class TagViewSet(ReadOnlyModelViewSet):
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeWriteSerializer
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
@@ -71,7 +71,7 @@ class RecipeViewSet(ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def shopping_cart(self, request, pk):
-        if request.method == 'POST':
+        if request.method == 'POST' or request.method == 'GET':
             return self.add_to(ShoppingCart, request.user, pk)
         else:
             return self.delete_from(ShoppingCart, request.user, pk)
@@ -117,13 +117,13 @@ class RecipeViewSet(ModelViewSet):
         today = datetime.today()
         shopping_list = (
                 f'Список покупок для: {user.get_full_name()}\n\n'
-                'Дата: %s. %s. %s. \n\n' % (today.day, today.month, today.year)
+                f'Дата: {today.day}.{today.month}.{today.year}. \n\n'
         )
         shopping_list += '\n'.join(
             [
-                f'- {ingredient["ingredient__name"]} '
-                f'({ingredient["ingredient__measurement_unit"]})'
-                f' - {ingredient["amount"]}'
+                f'- {ingredient["ingredient__name"]}: '
+                f' {ingredient["amount"]}'
+                f' {ingredient["ingredient__measurement_unit"]}.'
                 for ingredient in ingredients
             ]
         )

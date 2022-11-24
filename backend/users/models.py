@@ -6,14 +6,13 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.db.models import Manager
-from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
     username_validator = UnicodeUsernameValidator()
 
     email = models.EmailField(
-        _('email address'),
+        'email address',
         max_length=254,
         unique=True,
         error_messages={
@@ -23,14 +22,14 @@ class User(AbstractUser):
     )
 
     username = models.CharField(
-        _('username'),
+        'username',
         max_length=150,
-        help_text=_(
+        help_text=(
             'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'
         ),
         validators=[username_validator],
         error_messages={
-            'unique': _('Пользователь с таким именем уже существует.'),
+            'unique': 'Пользователь с таким именем уже существует.',
         },
     )
     subscriber: Union[Subscribe, Manager]
