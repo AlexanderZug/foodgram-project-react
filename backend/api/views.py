@@ -1,33 +1,29 @@
 from datetime import datetime
 
+from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import SAFE_METHODS
+from djoser.views import UserViewSet
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from api.pagination import CustomPagination
+from api.serializers import SubscribeSerializer, UserSerializer
 from recipes.models import (Favourite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
+from users.models import Subscribe
 
 from .filters import IngredientFilter, RecipeFilter
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeReadSerializer,
                           RecipeShortSerializer, RecipeWriteSerializer,
                           TagSerializer)
-
-from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
-from djoser.views import UserViewSet
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
-from api.pagination import CustomPagination
-from api.serializers import SubscribeSerializer, UserSerializer
-
-from users.models import Subscribe
 
 User = get_user_model()
 
