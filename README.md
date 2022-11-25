@@ -19,6 +19,24 @@ Foodgram - проект, выполненный в рамках обучения
 
 ## Установка и запуск в docker-compose
 
+Создайте и заполните .env файл в дериктории infra своими данными:
+```
+# указываем, с какой БД работаем
+DB_ENGINE=django.db.backends.postgresql
+# имя базы данных
+DB_NAME=
+# логин для подключения к базе данных
+POSTGRES_USER=
+# пароль для подключения к БД (установите свой)
+POSTGRES_PASSWORD=
+# название сервиса (контейнера)
+DB_HOST=
+# порт для подключения к БД
+DB_PORT=
+# секретный код приложения
+SECRET_KEY=
+```
+
 Клонировать репозиторий и перейти в директорию infra:
 
 ```
@@ -36,9 +54,12 @@ docker-compose -d --build
 
 Выполнить внутри контейнера миграции, заполнить БД данными и собрать статику:
 ```
-docker-compose exes back python3 manage.py migrate
-docker-compose exes back python3 manage.py laod_data
+docker-compose exeс back python3 manage.py migrate
+docker-compose exeс back python3 manage.py load_data
 docker-compose exec back python3 manage.py collectstatic --no-input
 ```
-Проект должен быть доступен по http://localhost
+
+Проект должен быть доступен по http://localhost, документацию к проекту 
+можно будет найти по адресу http://localhost/api/docs/ 
+
 Сервер также развернут по адресу: http://84.252.137.69/
