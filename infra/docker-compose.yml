@@ -9,7 +9,7 @@ services:
       - .env
 
   back:
-    image: alexzug89/f_back:latest
+    image: alexzug89/fg_back:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,7 +20,7 @@ services:
       - .env
 
   frontend:
-    image: alexzug89/f_front:latest
+    image: alexzug89/fg_front:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
