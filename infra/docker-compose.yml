@@ -21,7 +21,6 @@ services:
 
   frontend:
     image: alexzug89/f_front:latest
-
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
