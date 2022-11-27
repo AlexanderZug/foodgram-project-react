@@ -9,7 +9,7 @@ services:
       - .env
 
   backend:
-    image: alexzug89/fgam_back:latest
+    image: alexzug89/frgam_back:latest
     restart: always
     volumes:
       - static_value:/app/static/
