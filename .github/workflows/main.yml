@@ -43,14 +43,14 @@ jobs:
         with:
           context: backend/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/fg_back:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/fgram_back:latest
 
       - name: Push frontend to Docker Hub
         uses: docker/build-push-action@v2
         with:
           context: frontend/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/fg_front:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/fgram_front:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -68,7 +68,7 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/fg_front:latest
             cd infra/
             sudo docker-compose stop
-            sudo docker-compose rm back
+            sudo docker-compose rm backend
       - name: docker-compose up
         uses: appleboy/ssh-action@master
         with:

@@ -8,8 +8,8 @@ services:
     env_file:
       - .env
 
-  back:
-    image: alexzug89/fg_back:latest
+  backend:
+    image: alexzug89/fgam_back:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,11 +20,11 @@ services:
       - .env
 
   frontend:
-    image: alexzug89/fg_front:latest
+    image: alexzug89/fgram_front:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
-      - back
+      - backend
 
   nginx:
     image: nginx:1.19.3
