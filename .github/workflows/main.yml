@@ -64,8 +64,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/fg_back:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/fg_front:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/fgram_back:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/fgram_front:latest
             cd infra/
             sudo docker-compose stop
             sudo docker-compose rm backend
