@@ -61,5 +61,3 @@ docker-compose exec back python3 manage.py collectstatic --no-input
 
 Проект должен быть доступен по http://localhost, документацию к проекту 
 можно будет найти по адресу http://localhost/api/docs/ 
-
-Сервер также развернут по адресу: http://158.160.5.97/
